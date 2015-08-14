@@ -1,0 +1,12 @@
+[Unit]
+Description=OVF Network Configuration Service
+Wants=local-fs.target,systemd-hostnamed.service
+After=local-fs.target,systemd-hostnamed.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/bin/hostnamectl set-hostname `/usr/local/bin/ovfenv -k hostname`'
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
