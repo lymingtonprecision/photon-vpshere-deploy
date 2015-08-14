@@ -16,6 +16,7 @@
 #
 # ovfenv
 #    shows all the properties in id[key]=value format
+#    and connected networks in name (adapter mac addr) format
 #
 #
 # ovfenv --dump
@@ -53,6 +54,11 @@
 #
 # ovfenv --key [vm.password]=
 #
+#
+# ovfenv --mac network
+#
+#    shows the mac address of the adapter connected to
+#    the specified network
 
 
 import sys
@@ -83,6 +89,10 @@ XPATH_NSKEY                    = "@oe:" + XPATH_KEY
 XPATH_VALUE                    = "value"
 XPATH_NSVALUE                  = "oe:value"
 XPATH_ID                       = "id"
+XPATH_ADAPTER                  = "/ve:EthernetAdapterSection/ve:Adapter"
+XPATH_MYADAPTER                = XPATH_ENVIRONMENT + XPATH_ADAPTER
+XPATH_MAC                      = "mac"
+XPATH_NETWORK                  = "network"
 
 #
 # Various unavoidable shell commands
@@ -273,11 +283,19 @@ def set_property_value(doc, xp, entity_id, key, value):
 
     return 0
 
+def load_networks(xp, networks):
+    nodes = xp.xpathEval(XPATH_MYADAPTER)
+    for n in nodes:
+        networks.append((n.prop(XPATH_NETWORK), n.prop(XPATH_MAC)))
+
+    if debug:
+        stderr(ovfenv)
+
 
 def usage():
     stderr (_("Usage: ") +
            sys.argv[0] +
-           " [-h|--help] [-d|--dump] [-f|--file <ovfenvfile>] [-i|--id <VM ID>] [-k|--key <key>] [-v|--value <value>] [-D|--debug] [-q|--quiet]")
+           " [-h|--help] [-d|--dump] [-f|--file <ovfenvfile>] [-i|--id <VM ID>] [-k|--key <key>] [-v|--value <value>] [-m|--mac <network>] [-D|--debug] [-q|--quiet]")
 
 
 
@@ -285,7 +303,9 @@ def main():
     global debug
     global quiet
     ovfenv = []
+    networks = []
     searchkey = None
+    searchnet = None
     searchentity = None
     setvalue = None
     show_all = False
@@ -294,9 +314,10 @@ def main():
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "hk:dv:Df:i:q",
+                                   "hk:m:dv:Df:i:q",
                                    ["help",
                                     "key=",
+                                    "mac=",
                                     "dump",
                                     "quiet",
                                     "value=",
@@ -317,6 +338,8 @@ def main():
             searchkey = a
         elif o in ("-v", "--value"):
             setvalue = a
+        elif o in ("-m", "--mac"):
+            searchnet = a
         elif o in ("-d", "--dump"):
             dump = True
         elif o in ("-D", "--debug"):
@@ -329,9 +352,7 @@ def main():
             quiet = True
 
 
-    if not searchkey:
-        show_all = True
-    else:
+    if searchkey is not None:
         #
         # Extract the entity and key out of the passed
         # key. We can be passed
@@ -385,11 +406,19 @@ def main():
         return 0
 
     load_ovfenv(xp, ovfenv)
+    load_networks(xp, networks)
 
     if setvalue is not None and searchkey:
         return set_property_value(doc, xp, searchentity, searchkey, setvalue)
 
-    if not show_all:
+    if searchnet is not None:
+        for nw, mac in networks:
+          if searchnet.lower() == nw.lower():
+            print mac
+            return 0
+        stderr(_("Unabled to find a network named '" + searchnet + "'"))
+        return 1
+    elif searchkey is not None:
         for entity, key, value in ovfenv:
             if searchentity == entity and key == searchkey:
                 print value
@@ -402,6 +431,12 @@ def main():
                 print entity + '[' + key + ']=' + value
             else:
                 print '[' + key + ']=' + value
+
+        print ''
+	print 'Connected Networks:'
+	for nw, mac in networks:
+	    print nw + ' (' + mac + ')'
+
     return 0
 
 

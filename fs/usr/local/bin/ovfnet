@@ -2,13 +2,15 @@
 
 searchDomain=`ovfenv -k search-domain`
 dns=`ovfenv -k dns | sed 's/, */\\nDNS=/g'`
+eth0NW=`ovfenv -k eth0.network`
+eth0MAC=`ovfenv -m "$eth0NW"`
 eth0IP=`ovfenv -k eth0.ip`
 eth0CIDR=`ovfenv -k eth0.cidr`
 eth0GW=`ovfenv -k eth0.gw`
 
 network=$(cat <<EOF
 [Match]
-Name=eno16780032
+MACAddress=$eth0MAC
 
 [Network]
 Domains=$searchDomain
