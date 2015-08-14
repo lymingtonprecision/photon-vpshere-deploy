@@ -1,0 +1,32 @@
+#!/bin/sh
+
+searchDomain=`ovfenv -k search-domain`
+dns=`ovfenv -k dns | sed 's/, */\\nDNS=/g'`
+eth0IP=`ovfenv -k eth0.ip`
+eth0CIDR=`ovfenv -k eth0.cidr`
+eth0GW=`ovfenv -k eth0.gw`
+
+network=$(cat <<EOF
+[Match]
+Name=eno16780032
+
+[Network]
+Domains=$searchDomain
+DNS=$dns
+EOF
+)
+
+network=$(cat <<EOF
+$network
+
+[Address]
+Address=$eth0IP/$eth0CIDR
+
+[Route]
+Gateway=$eth0GW
+EOF
+)
+
+echo "$network"
+
+exit 0

@@ -1,0 +1,13 @@
+[Unit]
+Description=OVF Network Configuration Service
+Wants=local-fs.target
+After=local-fs.target
+Before=systemd-networkd.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/usr/local/bin/ovfnet > /etc/systemd/network/00-eth0-en.network'
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
