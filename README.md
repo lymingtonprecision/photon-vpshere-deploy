@@ -12,7 +12,7 @@ leveraged to, for example, provide the hostname and network
 configuration.
 
 It's particularly useful when coupled with network profiles and IP
-pools--enabling you to provision your VMs with a persistent IP address
+pools—enabling you to provision your VMs with a persistent IP address
 mapping from a pool of addresses without running a DHCP server.
 
 Sadly (but understandably) Photon has no direct support for OVF
@@ -20,7 +20,7 @@ properties. _This_ repository contains scripts, services, and
 opinionated instructions for creating a clonable Photon virtual
 machine template that can be configured from vApp Options. It
 completely removes any requirement to manually configure a virtual
-machine running Photon--allowing us to spawn new VMs on a whim.
+machine running Photon—allowing us to spawn new VMs on a whim.
 
 ## Creating the Template VM
 
@@ -70,13 +70,13 @@ follows:
 2. Press `i` to enter insert mode and enter (with appropriate
    substitutions):
 
-       [Match]
-       Name=eno*
+        [Match]
+        Name=eno*
 
-       [Network]
-       Address=<ip address>/<CIDR subnet>
-       Gateway=<gateway ip>
-       DNS=<primary DNS server ip>
+        [Network]
+        Address=<ip address>/<CIDR subnet>
+        Gateway=<gateway ip>
+        DNS=<primary DNS server ip>
 
 3. After entering the network configuration press `ESC` and then enter
    `:wq` to save the file and exit back to the prompt.
@@ -220,8 +220,8 @@ machine! Clone the virtual machine to a template and then proceed to
 create clones of it to do "real work".
 
 (Note: you can clone a new virtual machine directly from this
-"template" virtual machine--and that can be useful to test that
-everything works--but I would recommend cloning it to an actual
+"template" virtual machine—and that can be useful to test that
+everything works—but I would recommend cloning it to an actual
 template before instantiating any real virtual machine clones from
 it. This helps prevent any unintended modification of the template and
 ensures that all the virtual machines cloned from it will start off
@@ -244,7 +244,7 @@ the same.)
 8. Done.
 
 Congratulations you should now have a new Photon virtual machine to
-play with and--if you are using an IP address pool--the only thing you
+play with and—if you are using an IP address pool—the only thing you
 had to enter was the hostname.
 
 [photon]: https://github.com/vmware/photon
