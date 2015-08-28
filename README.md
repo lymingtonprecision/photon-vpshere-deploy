@@ -119,6 +119,29 @@ clone from the template now is a good time to enable it:
 
     systemctl enable docker
 
+##### DHCP Network Catchall
+
+Photon includes a single `systemd` network configuration file:
+`/etc/systemd/network/10-dhcp-en.network` which is ... very open.
+
+To avoid any issues this permissiveness might cause it is recommended
+that you either:
+
+* Remove the file completely, if you don't need DHCP network
+  configuration.
+* Change the `[Match]` section to be less open, i.e. by amending it
+  to:
+
+        [Match]
+        Name=en*
+
+  This will still enable DHCP configuration of any interfaces you add
+  but shouldn't clobber any other network configuration files.
+
+(The specific issue we've seen is a lower priority configuration file
+containing a `DNS=` entry being completely ignored when this isn't
+changed.)
+
 ##### Shell Prompt
 
 You might also want to slightly adjust the default shell prompt to
