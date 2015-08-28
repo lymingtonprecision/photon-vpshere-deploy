@@ -192,6 +192,12 @@ virtual machines then create the properties as follows:
   * `eth0.netmask`
   * `eth0.gw`
 
+You can, of course, mix-and-match the above static/dynamic properties
+to suit your own environment. You may, for example configure the
+`dns`, `search-domain`, `eth0.netmask` and `eth0.gw` dynamically from
+a Network Profile but assign the IP addresses manually rather than
+from a pool. Use whatever works for you.
+
 Regardless of how you're assigning IP addresses you also need the
 following properties:
 
