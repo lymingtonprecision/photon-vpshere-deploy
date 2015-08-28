@@ -54,8 +54,16 @@ installation and proceed as directed until the installation is
 complete and the VM restarts.
 
 After the VM restarts login and, if required, configure the
-network. The simplest way to establish a static network connection is
-as follows:
+network.
+
+#### Creating a Temporary Static Network Configuration
+
+If the network you've connected the VM to runs DHCP it should already
+have an IP address and you can skip this step, otherwise we'll need to
+manually configure a network connection to use during setup.
+
+The simplest way to establish a static network connection is as
+follows:
 
 1. At the command prompt enter
    `vim /etc/systemd/network/00-temp.network`
@@ -75,6 +83,8 @@ as follows:
 4. Run `systemctl restart systemd-networkd.service`
 5. Remove the temporary network configuration file
   (`rm /etc/systemd/network/00-temp.network`)
+
+#### Installing the vApp/OVF Scripts
 
 With the VM connected to the network we can proceed to copy over the
 scripts needed to use OVF properties. To do this you'll need SSH
@@ -100,10 +110,26 @@ directory to which you copied the `bin` and `lib` directories:
 
 You can now remove the `bin` and `lib` directories.
 
+#### Miscellaneous Configuration
+
+##### Docker
+
 If you want Docker running by default on any virtual machines you
 clone from the template now is a good time to enable it:
 
     systemctl enable docker
+
+##### Shell Prompt
+
+You might also want to slightly adjust the default shell prompt to
+include the hostname, so that it's easy to tell which VM's console you
+are connected to:
+
+1. `vim /etc/bashrc`
+2. Enter the substitution: `:%s/\\u/\\u@\\h/g`
+3. Save and close (`:wq`)
+
+#### Fini
 
 Shutdown the template virtual machine.
 
